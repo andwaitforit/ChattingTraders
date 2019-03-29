@@ -1,0 +1,133 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Thu Mar 28 12:03:15 2019
+
+@author: ahorgan
+"""
+
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib.pyplot import pie
+
+
+def main():
+    
+    users = pd.read_table('users.tsv')
+    posts = pd.read_table('discussion_posts.tsv')    
+    discussions = pd.read_table('discussions.tsv')
+    messages = pd.read_table('messages.tsv')
+
+    #Copy of discussion data pre-processing for easier comparisions
+    discussionRaw = pd.read_table('discussions.tsv')
+    
+    
+    
+    #Simple counts of users and discussions
+    discCount = len(discussions)-2
+    userCount = users.iloc[-1, 0]
+    
+    #Convert our time stamps and store timespan
+    posts['createDate'] = pd.to_datetime(posts['createDate'], unit='ms')
+    discussions['createDate'] = pd.to_datetime(discussions['createDate'], unit='ms')
+    messages['sendDate'] = pd.to_datetime(messages['sendDate'], unit='ms')
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    """Below are a couple of attempted methods to find all instances of userid in discussions 
+    DF and subtract max(createDate) - min(createDate) to find activty range"""
+    #Below is the sucessful grouping of createDates by userid
+    activityRange = discussionRaw['createDate'].groupby(discussionRaw.creator_id)
+    
+    
+    #Below is the general idea of what I'd like the function to do, group discussion posts by userid, get the max and min of each 
+    #subgroup and append the difference of max-min to the appropriate user id in activityrange.
+    #activityRange = pd.DataFrame({discussionRaw.creator_id : max(discussionRaw['createDate'].groupby(discussionRaw.creator_id)) - min(discussionRaw['createDate'].groupby(discussionRaw.creator_id))})
+    
+    #A function to print my groupby object
+    for key, item in activityRange:
+        print(max(activityRange.get_group(key)-min(activityRange.get_group(key))), "\n\n")    
+
+
+    
+    
+    
+    
+    
+    
+    ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+    
+    
+    
+    
+    discTimeSpan = max(discussions['createDate']) - min(discussions['createDate'])
+    postTimeSpan = max(posts['createDate']) - min(posts['createDate'])
+    messageTimeSpan = max(messages['sendDate']) - min(messages['sendDate'])
+    
+    timeTotals = max(discTimeSpan, postTimeSpan, messageTimeSpan)
+    
+    #print(users)
+    #print(discussions)
+    #print(discCount)
+    
+   
+    """
+    Printing our deliverable numbers  and charts
+    print(messageTimeSpan)
+    print(discTimeSpan)
+    print(postTimeSpan)
+ 
+ 
+ 
+ 
+ 
+    oldest = max(discussions['createDate'])
+    newest = min(discussions['createDate'])
+    print("our oldest date is: ", oldest, " and our newest is: ", newest)
+    
+    #Below are the functions for producing pie charts, need work on labeling still
+    messageType = messages.groupby(messages.type).size().plot(kind='pie', subplots=True)
+    discType = discussions.groupby(discussions.discussionCategory).size().plot(kind='pie', subplots=True, figsize=(10,10))
+    plt.axis('equal')
+    plt.show()
+
+    
+    
+    """
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+main()
+    
